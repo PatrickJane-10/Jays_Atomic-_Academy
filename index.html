@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jay's Atomic Academy — Nuclear Fission Power</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Crect width='24' height='24' rx='5' fill='%2316223F'/%3E%3Ccircle cx='12' cy='12' r='2.1' fill='%23F2A900'/%3E%3Cellipse cx='12' cy='12' rx='9.2' ry='3.7' stroke='%23FAF6EC' stroke-width='1.3'/%3E%3Cellipse cx='12' cy='12' rx='9.2' ry='3.7' stroke='%23E0332F' stroke-width='1.3' transform='rotate(60 12 12)'/%3E%3Cellipse cx='12' cy='12' rx='9.2' ry='3.7' stroke='%231652C4' stroke-width='1.3' transform='rotate(120 12 12)'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script>
+  // Applied before first paint so switching to dark mode never flashes light.
+  (function () {
+    try {
+      var saved = localStorage.getItem("sta_theme_v1");
+      if (saved === "dark") document.documentElement.setAttribute("data-theme", "dark");
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===================== CONTROL PANEL / SIDEBAR NAV ===================== -->
+  <nav class="control-panel" id="controlPanel">
+    <div class="panel-header">
+      <button class="panel-toggle" id="panelToggle" aria-label="Toggle navigation">☰</button>
+      <div class="panel-brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="2.2" fill="currentColor"/>
+            <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.4"/>
+            <ellipse cx="12" cy="12" rx="10" ry="4" stroke="#E0332F" stroke-width="1.4" transform="rotate(60 12 12)"/>
+            <ellipse cx="12" cy="12" rx="10" ry="4" stroke="#F2A900" stroke-width="1.4" transform="rotate(120 12 12)"/>
+          </svg>
+        </span>
+        <div class="brand-text">
+          <span class="brand-title">JAY'S ATOMIC<br>ACADEMY</span>
+          <span class="brand-sub">Fission Power / Learning Console</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-progress">
+      <div class="progress-label">
+        <span>REACTOR STARTUP PROGRESS</span>
+        <span id="progressPercent" class="mono">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <ul class="rod-nav" id="rodNav">
+      <li><button class="rod" data-target="home"><span class="rod-light" data-status="active"></span><span class="rod-num mono">00</span><span class="rod-label">Control Room <em>(Home)</em></span></button></li>
+      <li><button class="rod" data-target="module1"><span class="rod-light" data-status="incomplete"></span><span class="rod-num mono">01</span><span class="rod-label">Dawn of the Atomic Age</span></button></li>
+      <li><button class="rod" data-target="module2"><span class="rod-light" data-status="incomplete"></span><span class="rod-num mono">02</span><span class="rod-label">The Core Mechanics</span></button></li>
+      <li><button class="rod" data-target="module3"><span class="rod-light" data-status="incomplete"></span><span class="rod-num mono">03</span><span class="rod-label">Heat into Electricity</span></button></li>
+      <li><button class="rod" data-target="module4"><span class="rod-light" data-status="incomplete"></span><span class="rod-num mono">04</span><span class="rod-label">Powering the World</span></button></li>
+      <li><button class="rod" data-target="module5"><span class="rod-light" data-status="incomplete"></span><span class="rod-num mono">05</span><span class="rod-label">The Horizon</span></button></li>
+      <li><button class="rod" data-target="glossary"><span class="rod-light" data-status="static"></span><span class="rod-num mono">GL</span><span class="rod-label">Glossary</span></button></li>
+      <li><button class="rod" data-target="examCert"><span class="rod-light" data-status="incomplete"></span><span class="rod-num mono">EX</span><span class="rod-label">Certification Exam</span></button></li>
+    </ul>
+
+    <button class="panel-reset mono" id="resetProgress">RESET PROGRESS</button>
+    <button class="panel-theme-toggle mono" id="themeToggle" aria-pressed="false">
+      <span class="theme-icon" aria-hidden="true">🌙</span><span class="theme-label">DARK MODE</span>
+    </button>
+  </nav>
+
+  <!-- ===================== MAIN VIEWPORT ===================== -->
+  <main class="viewport" id="viewport">
+
+    <!-- ---------- HOME / HERO ---------- -->
+    <section class="view active theme-home" id="home" data-view="home">
+      <div class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow mono">TRACK A — NUCLEAR FISSION POWER</span>
+          <h1 class="hero-title">One neutron.<br>One split atom.<br><span class="glow">Two million times</span><br>the energy of coal.</h1>
+          <p class="hero-sub">Welcome to the reactor control room. Five systems stand between a single uranium nucleus and a city's electricity supply. Click an atom below to start a chain reaction — then explore how engineers turned this into a power plant.</p>
+          <button class="btn-primary" id="startLearning">Begin Module 01 →</button>
+        </div>
+        <div class="hero-reactor">
+          <canvas id="chainCanvas" width="560" height="560" aria-label="Interactive nuclear chain reaction simulation"></canvas>
+          <div class="reactor-readout mono">
+            <div><span id="reactCount">0</span> FISSIONS TRIGGERED</div>
+            <div><span id="reactEnergy">0</span> MeV RELEASED (ILLUSTRATIVE)</div>
+          </div>
+          <button class="btn-ghost mono" id="resetChain">↺ RESET CORE</button>
+        </div>
+      </div>
+
+      <div class="module-grid">
+        <div class="module-card" data-target="module1">
+          <svg class="module-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3z"/><circle cx="12" cy="11" r="2.4"/><path d="M12 3v6M8 15h8"/></svg>
+          <span class="mono card-num">01</span>
+          <h3>Dawn of the Atomic Age</h3>
+          <p>From Becquerel's accidental discovery to Chicago Pile-1 and the first power grids.</p>
+        </div>
+        <div class="module-card" data-target="module2">
+          <svg class="module-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="9.5" ry="3.8"/><ellipse cx="12" cy="12" rx="9.5" ry="3.8" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.5" ry="3.8" transform="rotate(120 12 12)"/></svg>
+          <span class="mono card-num">02</span>
+          <h3>The Core Mechanics</h3>
+          <p>Binding energy, induced fission, moderation, and controlled chain reactions.</p>
+        </div>
+        <div class="module-card" data-target="module3">
+          <svg class="module-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+          <span class="mono card-num">03</span>
+          <h3>Heat into Electricity</h3>
+          <p>Inside a PWR and a BWR — fuel, control rods, coolant, containment.</p>
+        </div>
+        <div class="module-card" data-target="module4">
+          <svg class="module-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 4 5.4 4 8.5s-1.4 6.1-4 8.5c-2.6-2.4-4-5.4-4-8.5s1.4-6.1 4-8.5z"/></svg>
+          <span class="mono card-num">04</span>
+          <h3>Powering the World</h3>
+          <p>Baseload power, carbon footprints, waste, and the safety record.</p>
+        </div>
+        <div class="module-card" data-target="module5">
+          <svg class="module-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21 14 11"/><circle cx="17" cy="8" r="3.2"/><path d="M19.5 5.5 22 3M15 10l-2.5 2.5M8 17l-2 2"/></svg>
+          <span class="mono card-num">05</span>
+          <h3>The Horizon</h3>
+          <p>Small Modular Reactors and Generation IV — what's being built right now.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- MODULE 1 ---------- -->
+    <section class="view theme-amber" id="module1" data-view="module1">
+      <header class="module-head">
+        <span class="eyebrow mono">MODULE 01</span>
+        <h2>The Dawn of the Atomic Age</h2>
+        <p class="module-intro">Every reactor on Earth today traces back to a chain of accidental discoveries, wartime urgency, and one afternoon in a squash court under a football stadium.</p>
+      </header>
+
+      <div class="module-banner">
+        <svg viewBox="0 0 720 200" role="img" aria-label="Retro poster illustration of an atom above a 1940s cityscape, rendered in gold, blue and red">
+          <rect width="720" height="200" fill="#FFF9EE"/>
+          <g stroke="#F2A900" stroke-width="1" opacity="0.5">
+            <line x1="360" y1="20" x2="360" y2="180"/>
+            <line x1="360" y1="100" x2="180" y2="20"/>
+            <line x1="360" y1="100" x2="540" y2="20"/>
+            <line x1="360" y1="100" x2="180" y2="180"/>
+            <line x1="360" y1="100" x2="540" y2="180"/>
+          </g>
+          <g transform="translate(360,100)">
+            <ellipse rx="130" ry="42" fill="none" stroke="#16223F" stroke-width="2.5"/>
+            <ellipse rx="130" ry="42" fill="none" stroke="#1652C4" stroke-width="2.5" transform="rotate(60)"/>
+            <ellipse rx="130" ry="42" fill="none" stroke="#E0332F" stroke-width="2.5" transform="rotate(120)"/>
+            <circle r="16" fill="#F2A900" stroke="#16223F" stroke-width="2.5"/>
+          </g>
+          <g transform="translate(40,150)" fill="#16223F" opacity="0.85">
+            <rect x="0" y="10" width="18" height="40"/>
+            <rect x="22" y="-10" width="18" height="60"/>
+            <rect x="44" y="20" width="18" height="30"/>
+            <rect x="620" y="0" width="18" height="50"/>
+            <rect x="642" y="18" width="18" height="32"/>
+            <rect x="664" y="-14" width="18" height="64"/>
+          </g>
+          <text x="360" y="195" text-anchor="middle" class="svg-label" fill="#48526B" font-size="10">DISCOVERY → CHICAGO PILE-1 → THE FIRST GRIDS</text>
+        </svg>
+      </div>
+
+      <div class="teacher-note">
+        <span class="tn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3 1 8l11 5 9-4.09V17h2V8L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="currentColor"/></svg></span>
+        <div class="tn-body">
+          <h5>Teacher's Note</h5>
+          <p>I want you to notice something as you read this timeline: none of these people set out to invent nuclear power. Becquerel was chasing a completely different phenomenon. Keep that in mind — it'll make Module 02 click faster once you see the physics they stumbled into.</p>
+        </div>
+      </div>
+
+      <div class="timeline" id="timeline1">
+        <div class="tl-item">
+          <div class="tl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="5" width="16" height="14" rx="1"/><path d="M4 9h16" /><circle cx="12" cy="14" r="2.4"/></svg></div>
+          <div class="tl-content">
+            <span class="tl-year mono">1896</span>
+            <div class="tl-with-photo">
+              <div>
+                <img class="tl-photo" src="images/becquerel.jpg" alt="Portrait photograph of Henri Becquerel" onerror="this.parentElement.style.display='none'">
+                <span class="tl-photo-cap mono">BECQUEREL</span>
+              </div>
+              <div class="tl-text">
+                <h4>Becquerel stumbles onto radioactivity</h4>
+                <p>Henri Becquerel left a uranium salt sample in a drawer with unexposed photographic plates. The plates fogged anyway — the uranium was emitting energy on its own, with no external light source. It was the first evidence that atoms weren't the indivisible, unchanging units science had assumed.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6v4l3 8a3 3 0 0 1-3 4H9a3 3 0 0 1-3-4l3-8V3z"/><path d="M8 15h8"/></svg></div>
+          <div class="tl-content">
+            <span class="tl-year mono">1898–1902</span>
+            <div class="tl-with-photo">
+              <div>
+                <img class="tl-photo" src="images/marie-curie.jpg" alt="Portrait photograph of Marie Curie" onerror="this.parentElement.style.display='none'">
+                <span class="tl-photo-cap mono">M. CURIE</span>
+              </div>
+              <div class="tl-text">
+                <h4>Marie & Pierre Curie isolate the source</h4>
+                <p>The Curies coined the term "radioactivity" and isolated two new elements, polonium and radium, from tonnes of pitchblende ore. Marie Curie's work proved radioactivity was a property of the atom itself, not a chemical reaction — laying the groundwork for nuclear (not chemical) physics.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="9" ry="3.5"/><ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(120 12 12)"/></svg></div>
+          <div class="tl-content">
+            <span class="tl-year mono">1911</span>
+            <div class="tl-with-photo">
+              <div>
+                <img class="tl-photo" src="images/rutherford.jpg" alt="Portrait photograph of Ernest Rutherford" onerror="this.parentElement.style.display='none'">
+                <span class="tl-photo-cap mono">RUTHERFORD</span>
+              </div>
+              <div class="tl-text">
+                <h4>Rutherford finds the nucleus</h4>
+                <p>Ernest Rutherford's gold foil experiment showed that atoms are mostly empty space, with almost all their mass concentrated in a tiny, dense, positively charged nucleus. This model — electrons orbiting a nucleus — is the picture that made fission conceivable: split the nucleus, release the energy binding it together.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7.5" cy="12" r="3.6"/><circle cx="16.5" cy="12" r="3.6"/><path d="M2 12h1.5M20.5 12H22M12 5v1M12 18v1"/></svg></div>
+          <div class="tl-content">
+            <span class="tl-year mono">1938</span>
+            <div class="tl-with-photo">
+              <div>
+                <img class="tl-photo" src="images/meitner.jpg" alt="Portrait photograph of Lise Meitner" onerror="this.parentElement.style.display='none'">
+                <span class="tl-photo-cap mono">MEITNER</span>
+              </div>
+              <div class="tl-text">
+                <h4>Meitner, Frisch, Hahn & Strassmann explain fission</h4>
+                <p>Otto Hahn and Fritz Strassmann bombarded uranium with neutrons and found barium in the results — a much lighter element, which made no sense under existing theory. Lise Meitner and her nephew Otto Frisch, working the physics out on a walk in the snow, realized the uranium nucleus had split in two. They named it "fission," borrowing the term from biology.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21 14 11"/><circle cx="17" cy="8" r="3.2"/><path d="M19.5 5.5 22 3M15 10l-2.5 2.5M8 17l-2 2"/></svg></div>
+          <div class="tl-content">
+            <span class="tl-year mono">1939–1945</span>
+            <h4>The Manhattan Project</h4>
+            <p>Fear that Nazi Germany could weaponize fission first pushed the US, UK, and Canada into a massive secret research effort. It brought together theoretical physicists, engineers, and industrial-scale production under Robert Oppenheimer's scientific leadership — and produced both the first reactors and the first nuclear weapons.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="14" width="16" height="4"/><rect x="5.5" y="10" width="13" height="4"/><rect x="7" y="6" width="10" height="4"/></svg></div>
+          <div class="tl-content">
+            <span class="tl-year mono">Dec 2, 1942</span>
+            <div class="tl-with-photo">
+              <div>
+                <img class="tl-photo" src="images/fermi.jpg" alt="Portrait photograph of Enrico Fermi" onerror="this.parentElement.style.display='none'">
+                <span class="tl-photo-cap mono">FERMI</span>
+              </div>
+              <div class="tl-text">
+                <h4>Chicago Pile-1: the first controlled chain reaction</h4>
+                <p>Under a disused football stadium at the University of Chicago, Enrico Fermi's team built a pile of uranium and graphite blocks by hand. By carefully withdrawing a neutron-absorbing control rod, they achieved the first self-sustaining, human-controlled nuclear chain reaction in history — proof that fission's energy could be released steadily, not just explosively.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></div>
+          <div class="tl-content">
+            <span class="tl-year mono">1951–1957</span>
+            <h4>Generation I: from lab to grid</h4>
+            <p>EBR-I in Idaho became the first reactor to generate usable electricity in 1951. In 1954 the USSR's Obninsk plant became the first to supply a power grid. In 1957 the Shippingport Atomic Power Station in Pennsylvania became the first full-scale commercial reactor in the US — Generation I had arrived.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 21V9a2 2 0 0 1 2-2h1V4h8v3h1a2 2 0 0 1 2 2v12"/><path d="M9 21v-4h6v4M9 12h.01M15 12h.01M9 16h.01M15 16h.01"/></svg></div>
+          <div class="tl-content">
+            <span class="tl-year mono">1960s–1990s</span>
+            <div class="tl-with-photo">
+              <div>
+                <img class="tl-photo" src="images/plant.jpg" alt="Photograph of a real nuclear power plant with cooling towers" onerror="this.parentElement.style.display='none'">
+                <span class="tl-photo-cap mono">A REAL PLANT</span>
+              </div>
+              <div class="tl-text">
+                <h4>Generation II: the workhorse fleet</h4>
+                <p>Standardized, larger-scale PWR and BWR designs were built by the hundreds worldwide. Most reactors operating today are Generation II, refined over decades — including after the safety lessons of Three Mile Island and Chernobyl (Module 04).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <div class="tl-content">
+            <span class="tl-year mono">2000s–Today</span>
+            <h4>Generation III / III+: passive safety</h4>
+            <p>Designs like the AP1000 and EPR add passive safety systems — ones that use gravity and natural convection instead of powered pumps to cool the core in an emergency, so they work even if all power is lost. These are the reactors being built new today, before Generation IV and SMRs (Module 05) take the field further.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <h4>Why this history matters</h4>
+        <p>Notice the pattern: <em>discovery → theoretical explanation → controlled demonstration → engineering at scale</em>. That's the same arc every technology in this app follows, and it's why Chicago Pile-1 — not a power plant, just a pile of graphite and uranium in a squash court — is the true birth of the nuclear industry.</p>
+      </div>
+
+      <div class="quiz" id="quiz1">
+        <h4 class="quiz-title mono">CHECKPOINT — MODULE 01</h4>
+        <div class="quiz-q" data-answer="b">
+          <p>1. What did Lise Meitner and Otto Frisch realize had happened to the uranium nucleus?</p>
+          <div class="quiz-opts">
+            <button data-val="a">It had absorbed a proton</button>
+            <button data-val="b">It had split into two lighter nuclei</button>
+            <button data-val="c">It had turned into pure energy with no remaining matter</button>
+          </div>
+        </div>
+        <div class="quiz-q" data-answer="c">
+          <p>2. What made Chicago Pile-1 significant?</p>
+          <div class="quiz-opts">
+            <button data-val="a">It was the first nuclear weapon</button>
+            <button data-val="b">It generated electricity for a city</button>
+            <button data-val="c">It was the first controlled, self-sustaining chain reaction</button>
+          </div>
+        </div>
+        <div class="quiz-q" data-answer="a">
+          <p>3. What is the key feature of Generation III/III+ reactor designs?</p>
+          <div class="quiz-opts">
+            <button data-val="a">Passive safety systems that work without electrical power</button>
+            <button data-val="b">They use no control rods</button>
+            <button data-val="c">They run without a moderator</button>
+          </div>
+        </div>
+        <div class="quiz-result mono" id="quizResult1" aria-live="polite"></div>
+      </div>
+
+      <div class="further-reading">
+        <h4 class="mono">FURTHER READING — MODULE 01</h4>
+        <ul>
+          <li><a href="https://world-nuclear.org/information-library/current-and-future-generation/outline-history-of-nuclear-energy" target="_blank" rel="noopener">World Nuclear Association — Outline History of Nuclear Energy <span class="fr-source mono">WNA</span></a></li>
+          <li><a href="https://www.iaea.org/about/overview/history" target="_blank" rel="noopener">IAEA — History of the Agency & the Atomic Age <span class="fr-source mono">IAEA</span></a></li>
+          <li><a href="https://www.nrc.gov/about-nrc/history.html" target="_blank" rel="noopener">U.S. NRC — History of Nuclear Regulation <span class="fr-source mono">NRC</span></a></li>
+        </ul>
+      </div>
+
+      <nav class="module-footer-nav">
+        <button class="btn-ghost" data-target="home">← Control Room</button>
+        <button class="btn-primary" data-target="module2">Module 02: The Core Mechanics →</button>
+      </nav>
+    </section>
+
+    <!-- ---------- MODULE 2 ---------- -->
+    <section class="view theme-cherenkov" id="module2" data-view="module2">
+      <header class="module-head">
+        <span class="eyebrow mono">MODULE 02</span>
+        <h2>The Core Mechanics</h2>
+        <p class="module-intro">Why does splitting a heavy atom release energy at all? The answer sits in one curve — and one simple bookkeeping trick: mass turns into energy, and you can measure exactly how much.</p>
+      </header>
+
+      <div class="module-banner">
+        <svg viewBox="0 0 720 200" role="img" aria-label="Retro poster illustration of a uranium nucleus splitting into two fragments plus neutrons, in blue, gold and red">
+          <rect width="720" height="200" fill="#FFF9EE"/>
+          <g stroke="#1652C4" stroke-width="1" stroke-dasharray="4 4" opacity="0.4">
+            <line x1="0" y1="60" x2="720" y2="60"/>
+            <line x1="0" y1="140" x2="720" y2="140"/>
+          </g>
+          <circle cx="150" cy="100" r="46" fill="none" stroke="#16223F" stroke-width="2.5"/>
+          <circle cx="150" cy="100" r="30" fill="#1652C4" opacity="0.85"/>
+          <g stroke="#16223F" stroke-width="2" marker-end="url(#modBannerArrow)">
+            <path d="M205 100 H 320" fill="none"/>
+          </g>
+          <circle cx="330" cy="100" r="4" fill="#F2A900"/>
+          <circle cx="440" cy="60" r="30" fill="none" stroke="#16223F" stroke-width="2.5"/>
+          <circle cx="440" cy="60" r="18" fill="#E0332F" opacity="0.85"/>
+          <circle cx="470" cy="150" r="22" fill="none" stroke="#16223F" stroke-width="2.5"/>
+          <circle cx="470" cy="150" r="13" fill="#F2A900" opacity="0.9"/>
+          <g fill="#16223F">
+            <circle cx="520" cy="45" r="4"/>
+            <circle cx="540" cy="90" r="4"/>
+            <circle cx="500" cy="185" r="4"/>
+          </g>
+          <defs>
+            <marker id="modBannerArrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#16223F"/></marker>
+          </defs>
+          <text x="360" y="195" text-anchor="middle" class="svg-label" fill="#48526B" font-size="10">ONE NEUTRON IN, TWO FRAGMENTS + MORE NEUTRONS OUT</text>
+        </svg>
+      </div>
+
+      <div class="concept-block">
+        <h3><span class="concept-num mono">2.1</span> The binding energy curve</h3>
+        <p>Every nucleus is held together by the strong nuclear force, fighting against the electric repulsion of its protons. "Binding energy per nucleon" measures how tightly packed and stable a nucleus is — the higher the value, the more stable.</p>
+        <div class="svg-frame">
+          <svg viewBox="0 0 640 260" class="be-curve" role="img" aria-label="Binding energy per nucleon curve, peaking at iron-56">
+            <line x1="50" y1="220" x2="610" y2="220" stroke="#B9AE94" stroke-width="1"/>
+            <line x1="50" y1="220" x2="50" y2="20" stroke="#B9AE94" stroke-width="1"/>
+            <text x="330" y="248" class="svg-label" text-anchor="middle">MASS NUMBER (A) →</text>
+            <text x="20" y="120" class="svg-label" text-anchor="middle" transform="rotate(-90 20 120)">BINDING ENERGY / NUCLEON</text>
+            <path d="M 55 210 Q 120 60 175 55 Q 220 52 260 58 L 610 130" fill="none" stroke="#1652C4" stroke-width="2.5"/>
+            <circle cx="175" cy="55" r="5" fill="#F2A900"/>
+            <text x="175" y="38" class="svg-label" text-anchor="middle" fill="#F2A900">IRON-56 (peak stability)</text>
+            <circle cx="595" cy="127" r="5" fill="#1652C4"/>
+            <text x="540" y="150" class="svg-label" text-anchor="middle">URANIUM-235</text>
+            <line x1="595" y1="127" x2="330" y2="60" stroke="#55617A" stroke-width="1" stroke-dasharray="3,4"/>
+            <text x="410" y="52" class="svg-label" fill="#55617A">splitting releases the energy gap ↑</text>
+          </svg>
+        </div>
+        <div class="predict">
+          <p class="predict-q">🤔 <strong>Before I explain — take a guess:</strong> if you split a uranium nucleus into two smaller pieces, where does the burst of energy actually come from? Is it created from nothing, or was it hiding somewhere the whole time?</p>
+          <button class="predict-btn" data-label="Reveal the answer →">Reveal the answer →</button>
+          <div class="predict-answer">
+            <p>It was hiding as <em>mass</em>. The two fragments, added together, weigh very slightly less than the original uranium nucleus did. That "missing" mass didn't vanish — Einstein's E = mc² tells us it converted directly into energy. Nothing is created from nothing; a tiny sliver of matter simply became energy.</p>
+          </div>
+        </div>
+        <p>Iron-56 sits at the peak — the most stable nucleus there is. Uranium-235, far to the right, is <em>less</em> tightly bound per nucleon. Split it into two mid-sized fragments closer to the peak, and the "leftover" binding energy has to go somewhere: it's released as kinetic energy, radiation, and heat. That's the entire source of fission power, expressed by Einstein's mass-energy relation — the tiny bit of mass "missing" after the split (the mass defect) reappears as energy, E = mc².</p>
+      </div>
+
+      <div class="teacher-note">
+        <span class="tn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3 1 8l11 5 9-4.09V17h2V8L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="currentColor"/></svg></span>
+        <div class="tn-body">
+          <h5>Teacher's Note</h5>
+          <p>Students often mix up "moderator" and "control rod" — they sound similar but do opposite jobs. My trick: a moderator makes the reaction <em>more</em> effective (slows neutrons so they're captured more easily); a control rod makes it <em>less</em> effective (absorbs neutrons outright). One tunes the reaction up, the other dials it down.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <h3><span class="concept-num mono">2.2</span> Induced fission: U-235 and Pu-239</h3>
+        <p>U-235 and Pu-239 are called "fissile" — a nucleus of either one can absorb a slow-moving neutron and become so unstable it splits almost immediately. A typical event looks like this:</p>
+        <div class="equation-block mono">
+          <p>U-235 + n → [U-236]* → Ba-141 + Kr-92 + 3n + energy</p>
+        </div>
+        <p>The unstable "compound nucleus" (U-236) wobbles like a stretching water droplet until it snaps into two smaller fragments — typically one around mass 90–100 and one around 130–145 — plus two or three <em>new</em> free neutrons. Those new neutrons are the key to everything in section 2.4.</p>
+      </div>
+
+      <div class="concept-block">
+        <h3><span class="concept-num mono">2.3</span> Neutron moderation: why slow neutrons work better</h3>
+        <p>Neutrons released by fission are "fast" — moving at roughly 7% the speed of light. At that speed, they mostly zip straight past other U-235 nuclei without being captured. Paradoxically, <em>slow</em> ("thermal") neutrons are far more likely to trigger the next fission.</p>
+        <p>A <strong>moderator</strong> — usually ordinary water, heavy water, or graphite — sits between fuel atoms and absorbs kinetic energy from neutrons through repeated collisions, the same way a cue ball loses speed bouncing between similarly-sized billiard balls. Slow the neutrons down, and the chain reaction becomes dramatically more efficient.</p>
+      </div>
+
+      <div class="concept-block">
+        <h3><span class="concept-num mono">2.4</span> Controlled chain reactions: the idea of criticality</h3>
+        <p>Each fission releases 2–3 new neutrons. If, on average, exactly <strong>one</strong> of those neutrons goes on to cause another fission, the reaction sustains itself at a constant rate — this is called <strong>criticality</strong>, often written as k = 1. If more than one causes further fission (k &gt; 1), the reaction grows exponentially. If fewer (k &lt; 1), it dies out.</p>
+        <p><strong>Control rods</strong>, made of neutron-absorbing materials like boron or cadmium, are how operators hold k at exactly 1: insert them further to soak up excess neutrons and slow the reaction; withdraw them to speed it up. Try it below — this is the same chain-reaction system from the homepage, except now you can see it as what it actually models.</p>
+
+        <div class="mini-reactor-wrap">
+          <div class="k-factor-widget">
+            <div class="k-factor-row">
+              <label for="kFactorSlider" class="k-factor-label mono">NEUTRON MULTIPLICATION FACTOR (k)</label>
+              <span class="k-factor-value mono" id="kFactorValue">1.00</span>
+            </div>
+            <input type="range" id="kFactorSlider" class="k-factor-slider" min="0.80" max="1.20" step="0.01" value="1.00" aria-describedby="kFactorState">
+            <div class="k-factor-scale mono"><span>0.80 — dies out fast</span><span>1.00 — critical</span><span>1.20 — runs away</span></div>
+            <p class="k-factor-state mono" id="kFactorState">k = 1.00 — CRITICAL: each fission triggers, on average, exactly one more.</p>
+          </div>
+          <canvas id="chainCanvas2" width="480" height="300" aria-label="Second interactive chain reaction demonstration"></canvas>
+          <div class="reactor-readout mono">
+            <div><span id="reactCount2">0</span> FISSIONS TRIGGERED</div>
+          </div>
+          <button class="btn-ghost mono" id="resetChain2">↺ RESET</button>
+        </div>
+      </div>
+
+      <div class="callout">
+        <h4>The takeaway</h4>
+        <p>Fission works because uranium is less stable than iron, a moderator makes neutrons more effective at triggering the next split, and control rods let engineers hold the chain reaction at a steady, controlled rate — neither dying out nor running away. Module 03 shows how that steady heat gets turned into electricity.</p>
+      </div>
+
+      <div class="quiz" id="quiz2">
+        <h4 class="quiz-title mono">CHECKPOINT — MODULE 02</h4>
+        <div class="quiz-q" data-answer="b">
+          <p>1. Why does splitting uranium release energy?</p>
+          <div class="quiz-opts">
+            <button data-val="a">Uranium atoms are radioactive by nature</button>
+            <button data-val="b">The fragments are more tightly bound (per nucleon) than uranium was, releasing the difference as energy</button>
+            <button data-val="c">Neutrons carry energy into the nucleus and it bounces back out</button>
+          </div>
+        </div>
+        <div class="quiz-q" data-answer="a">
+          <p>2. What does a moderator do?</p>
+          <div class="quiz-opts">
+            <button data-val="a">Slows fast neutrons down so they're more likely to trigger further fission</button>
+            <button data-val="b">Absorbs neutrons permanently to stop the reaction</button>
+            <button data-val="c">Speeds neutrons up to increase energy output</button>
+          </div>
+        </div>
+        <div class="quiz-q" data-answer="c">
+          <p>3. What does "criticality" (k = 1) mean?</p>
+          <div class="quiz-opts">
+            <button data-val="a">The reactor is about to explode</button>
+            <button data-val="b">All control rods are fully withdrawn</button>
+            <button data-val="c">On average, exactly one neutron from each fission triggers the next, so the reaction rate stays constant</button>
+          </div>
+        </div>
+        <div class="quiz-result mono" id="quizResult2" aria-live="polite"></div>
+      </div>
+
+      <div class="further-reading">
+        <h4 class="mono">FURTHER READING — MODULE 02</h4>
+        <ul>
+          <li><a href="https://world-nuclear.org/information-library/nuclear-fuel-cycle/introduction/physics-of-nuclear-energy" target="_blank" rel="noopener">World Nuclear Association — Physics of Nuclear Energy <span class="fr-source mono">WNA</span></a></li>
+          <li><a href="https://www.iaea.org/topics/nuclear-fuel-cycle" target="_blank" rel="noopener">IAEA — Nuclear Fuel Cycle <span class="fr-source mono">IAEA</span></a></li>
+          <li><a href="https://www.nrc.gov/reading-rm/basic-ref/students.html" target="_blank" rel="noopener">U.S. NRC — Students' Corner: Nuclear Science 101 <span class="fr-source mono">NRC</span></a></li>
+        </ul>
+      </div>
+
+      <nav class="module-footer-nav">
+        <button class="btn-ghost" data-target="module1">← Module 01</button>
+        <button class="btn-primary" data-target="module3">Module 03: Heat into Electricity →</button>
+      </nav>
+    </section>
+
+    <!-- ---------- MODULE 3 ---------- -->
+    <section class="view theme-teal" id="module3" data-view="module3">
+      <header class="module-head">
+        <span class="eyebrow mono">MODULE 03</span>
+        <h2>Turning Heat into Electricity</h2>
+        <p class="module-intro">A reactor is, at heart, a very sophisticated kettle: fission makes heat, heat makes steam, steam spins a turbine. The engineering is all about doing that safely and reliably.</p>
+      </header>
+
+      <div class="module-hero-image">
+        <svg viewBox="0 0 640 120" role="img" aria-label="Icon banner representing reactor engineering: core, cooling, turbine">
+          <g transform="translate(60,20)"><circle cx="30" cy="40" r="32" fill="none" stroke="#F2711C" stroke-width="2"/><line x1="18" y1="30" x2="18" y2="50" stroke="#F2A900" stroke-width="3"/><line x1="30" y1="30" x2="30" y2="50" stroke="#F2A900" stroke-width="3"/><line x1="42" y1="30" x2="42" y2="50" stroke="#F2A900" stroke-width="3"/><text x="30" y="95" class="svg-label" text-anchor="middle">REACTOR CORE</text></g>
+          <g transform="translate(280,20)"><path d="M0,40 Q15,20 30,40 T60,40" fill="none" stroke="#F2711C" stroke-width="2.5"/><path d="M0,55 Q15,35 30,55 T60,55" fill="none" stroke="#F2711C" stroke-width="2.5" opacity="0.5"/><text x="30" y="95" class="svg-label" text-anchor="middle">COOLANT LOOP</text></g>
+          <g transform="translate(500,20)"><path d="M10,15 L10,65 L35,50 L35,30 Z" fill="none" stroke="#F2711C" stroke-width="2"/><circle cx="50" cy="40" r="14" fill="none" stroke="#F2711C" stroke-width="2"/><text x="30" y="95" class="svg-label" text-anchor="middle">TURBINE + GEN.</text></g>
+        </svg>
+      </div>
+
+      <div class="real-photo-frame">
+        <img src="images/plant.jpg" alt="Photograph of the Cofrentes nuclear power plant in Spain, showing its cooling towers" onerror="this.closest('.real-photo-frame').style.display='none'">
+        <p class="real-photo-caption">A real plant: Cofrentes Nuclear Power Plant, Spain. Those cooling towers aren't part of the reactor at all — they're just releasing waste heat from the secondary loop's condenser as harmless water vapor. Photo: Wikimedia Commons.</p>
+      </div>
+
+      <div class="predict">
+        <p class="predict-q">🤔 <strong>Quick prediction:</strong> if a BWR only needs one loop instead of two, why don't all reactors just use the simpler BWR design?</p>
+        <button class="predict-btn" data-label="Reveal the answer →">Reveal the answer →</button>
+        <div class="predict-answer">
+          <p>Simplicity comes at a cost: because BWR steam comes straight from the core, the turbine hall itself picks up some radioactivity and needs extra shielding and maintenance controls. PWRs trade a more complex build (the extra steam-generator loop) for a turbine hall that's easier and cheaper to service over the plant's lifetime — which is why PWRs remain the more common choice worldwide.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <h3><span class="concept-num mono">3.1</span> Five core components</h3>
+        <div class="component-grid">
+          <div class="component-card"><span class="mono comp-tag">FUEL RODS</span><p>Thin zirconium alloy tubes packed with uranium fuel pellets. This is where fission happens and heat is generated.</p></div>
+          <div class="component-card"><span class="mono comp-tag">CONTROL RODS</span><p>Neutron-absorbing rods (boron/cadmium) that slide in and out to hold the chain reaction at criticality — see Module 02.</p></div>
+          <div class="component-card"><span class="mono comp-tag">MODERATOR</span><p>Usually the water surrounding the fuel — slows fast neutrons so they trigger further fission more effectively.</p></div>
+          <div class="component-card"><span class="mono comp-tag">COOLANT</span><p>Carries heat away from the core to make steam. Often the same water that acts as the moderator.</p></div>
+          <div class="component-card"><span class="mono comp-tag">CONTAINMENT</span><p>A thick steel-and-concrete structure enclosing the reactor, the final physical barrier against any release of radioactive material.</p></div>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <h3><span class="concept-num mono">3.2</span> Pressurized Water Reactor (PWR)</h3>
+        <p>The most common reactor type worldwide. Its defining feature: <strong>two separate water loops</strong> that never mix.</p>
+        <div class="svg-frame">
+          <svg viewBox="0 0 760 430" role="img" aria-label="Diagram of a Pressurized Water Reactor showing the primary loop inside containment transferring heat to a separate secondary loop that drives the turbine">
+            <text x="135" y="26" class="svg-label" text-anchor="middle" fill="#1652C4">CONTAINMENT</text>
+            <rect x="40" y="40" width="190" height="260" rx="10" fill="none" stroke="#1652C4" stroke-width="2.5"/>
+
+            <rect x="75" y="150" width="120" height="110" fill="#E9E0C8" stroke="#55617A" stroke-width="1.5"/>
+            <g class="core-pulse">
+              <line x1="90" y1="165" x2="90" y2="235" stroke="#F2A900" stroke-width="3"/>
+              <line x1="110" y1="165" x2="110" y2="235" stroke="#F2A900" stroke-width="3"/>
+              <line x1="130" y1="165" x2="130" y2="235" stroke="#F2A900" stroke-width="3"/>
+              <line x1="150" y1="165" x2="150" y2="235" stroke="#F2A900" stroke-width="3"/>
+              <line x1="170" y1="165" x2="170" y2="235" stroke="#F2A900" stroke-width="3"/>
+            </g>
+            <text x="135" y="278" class="svg-label" text-anchor="middle">CORE</text>
+
+            <text x="335" y="58" class="svg-label" text-anchor="middle">STEAM GENERATOR</text>
+            <rect x="300" y="70" width="70" height="190" rx="35" fill="none" stroke="#55617A" stroke-width="1.8"/>
+
+            <path id="pwrPrimary1" class="flow-pipe" d="M 195 175 C 250 150, 270 120, 300 100" fill="none" stroke="#1652C4" stroke-width="2.5" marker-end="url(#arrow)"/>
+            <path id="pwrPrimary2" class="flow-pipe" d="M 300 230 C 270 255, 250 255, 195 235" fill="none" stroke="#1652C4" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+            <text x="510" y="98" class="svg-label" text-anchor="middle" font-size="9">TURBINE</text>
+            <rect x="460" y="110" width="100" height="60" rx="6" fill="none" stroke="#F2A900" stroke-width="1.8"/>
+
+            <circle cx="610" cy="140" r="34" fill="none" stroke="#F2A900" stroke-width="1.8"/>
+            <text x="610" y="185" class="svg-label" text-anchor="middle" font-size="9">GEN.</text>
+            <line x1="560" y1="140" x2="576" y2="140" stroke="#F2A900" stroke-width="2.5"/>
+
+            <path id="pwrSec1" class="flow-pipe" d="M 370 100 C 410 80, 430 110, 460 130" fill="none" stroke="#F2A900" stroke-width="2.5" marker-end="url(#arrow2)"/>
+            <path id="pwrSec2" class="flow-pipe" d="M 510 170 C 505 205, 495 230, 480 250" fill="none" stroke="#55617A" stroke-width="2.5" marker-end="url(#arrow3)"/>
+            <path id="pwrSec3" class="flow-pipe" d="M 420 280 C 380 300, 350 290, 335 260" fill="none" stroke="#55617A" stroke-width="2.5" marker-end="url(#arrow4)"/>
+
+            <rect x="420" y="250" width="120" height="60" rx="6" fill="none" stroke="#55617A" stroke-width="1.8"/>
+            <text x="480" y="325" class="svg-label" text-anchor="middle" font-size="9">CONDENSER</text>
+
+            <circle r="3.2" fill="#1652C4"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#pwrPrimary1"/></animateMotion></circle>
+            <circle r="3.2" fill="#1652C4"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#pwrPrimary2"/></animateMotion></circle>
+            <circle r="3" fill="#F2A900"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#pwrSec1"/></animateMotion></circle>
+            <circle r="3" fill="#55617A"><animateMotion dur="2s" repeatCount="indefinite"><mpath href="#pwrSec2"/></animateMotion></circle>
+            <circle r="3" fill="#55617A"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#pwrSec3"/></animateMotion></circle>
+
+            <line x1="40" y1="352" x2="720" y2="352" stroke="#E4D9BE" stroke-width="1"/>
+            <line x1="40" y1="384" x2="70" y2="384" stroke="#1652C4" stroke-width="3"/>
+            <text x="80" y="388" class="svg-label" fill="#1652C4">PRIMARY LOOP — stays inside containment, radioactive</text>
+            <line x1="40" y1="410" x2="70" y2="410" stroke="#9C6B00" stroke-width="3"/>
+            <text x="80" y="414" class="svg-label" fill="#9C6B00">SECONDARY LOOP — drives the turbine, never touches the core</text>
+            <text x="720" y="410" class="svg-label" text-anchor="end">→ electricity to grid</text>
+
+            <defs>
+              <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#1652C4"/></marker>
+              <marker id="arrow2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#F2A900"/></marker>
+              <marker id="arrow3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#55617A"/></marker>
+              <marker id="arrow4" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#55617A"/></marker>
+            </defs>
+          </svg>
+        </div>
+        <p>Superheated, highly pressurized water circulates through the core (the <strong>primary loop</strong>) and transfers its heat to a separate <strong>secondary loop</strong> inside the steam generator — without the two ever mixing. Only the secondary loop's steam touches the turbine, so anything spinning the generator has never been near the reactor core.</p>
+      </div>
+
+      <div class="concept-block">
+        <h3><span class="concept-num mono">3.3</span> Boiling Water Reactor (BWR)</h3>
+        <p>A BWR simplifies the design: there's only <strong>one loop</strong>. Water boils directly inside the reactor core, and that steam goes straight to the turbine.</p>
+        <div class="svg-frame">
+          <svg viewBox="0 0 760 380" role="img" aria-label="Diagram of a Boiling Water Reactor showing a single loop where steam travels directly from the core to the turbine">
+            <text x="140" y="26" class="svg-label" text-anchor="middle" fill="#1652C4">CONTAINMENT</text>
+            <rect x="40" y="40" width="200" height="230" rx="10" fill="none" stroke="#1652C4" stroke-width="2.5"/>
+
+            <rect x="80" y="150" width="120" height="100" fill="#E9E0C8" stroke="#55617A" stroke-width="1.5"/>
+            <g class="core-pulse">
+              <line x1="95" y1="165" x2="95" y2="230" stroke="#F2A900" stroke-width="3"/>
+              <line x1="115" y1="165" x2="115" y2="230" stroke="#F2A900" stroke-width="3"/>
+              <line x1="135" y1="165" x2="135" y2="230" stroke="#F2A900" stroke-width="3"/>
+              <line x1="155" y1="165" x2="155" y2="230" stroke="#F2A900" stroke-width="3"/>
+              <line x1="175" y1="165" x2="175" y2="230" stroke="#F2A900" stroke-width="3"/>
+            </g>
+            <text x="140" y="268" class="svg-label" text-anchor="middle">CORE</text>
+
+            <path id="bwrLoop1" class="flow-pipe" d="M 200 150 C 230 110, 245 85, 270 65" fill="none" stroke="#1652C4" stroke-width="2.5" marker-end="url(#arrowB)"/>
+
+            <text x="500" y="88" class="svg-label" text-anchor="middle" font-size="9">TURBINE</text>
+            <rect x="450" y="100" width="100" height="60" rx="6" fill="none" stroke="#1652C4" stroke-width="1.8"/>
+            <path id="bwrLoop2" class="flow-pipe" d="M 270 65 C 340 40, 400 55, 450 100" fill="none" stroke="#1652C4" stroke-width="2.5" marker-end="url(#arrowB2)"/>
+
+            <circle cx="600" cy="130" r="34" fill="none" stroke="#1652C4" stroke-width="1.8"/>
+            <text x="600" y="175" class="svg-label" text-anchor="middle" font-size="9">GEN.</text>
+            <line x1="550" y1="130" x2="566" y2="130" stroke="#1652C4" stroke-width="2.5"/>
+
+            <path id="bwrLoop3" class="flow-pipe" d="M 500 160 C 495 200, 480 225, 460 250" fill="none" stroke="#55617A" stroke-width="2.5" marker-end="url(#arrowB3)"/>
+
+            <rect x="400" y="250" width="120" height="60" rx="6" fill="none" stroke="#55617A" stroke-width="1.8"/>
+            <text x="460" y="325" class="svg-label" text-anchor="middle" font-size="9">CONDENSER</text>
+
+            <path id="bwrLoop4" class="flow-pipe" d="M 400 280 C 320 300, 250 280, 240 200" fill="none" stroke="#55617A" stroke-width="2.5" marker-end="url(#arrowB4)"/>
+
+            <circle r="3.2" fill="#1652C4"><animateMotion dur="2s" repeatCount="indefinite"><mpath href="#bwrLoop1"/></animateMotion></circle>
+            <circle r="3.2" fill="#1652C4"><animateMotion dur="2s" repeatCount="indefinite"><mpath href="#bwrLoop2"/></animateMotion></circle>
+            <circle r="3" fill="#55617A"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#bwrLoop3"/></animateMotion></circle>
+            <circle r="3" fill="#55617A"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#bwrLoop4"/></animateMotion></circle>
+
+            <line x1="40" y1="335" x2="720" y2="335" stroke="#E4D9BE" stroke-width="1"/>
+            <line x1="40" y1="360" x2="70" y2="360" stroke="#1652C4" stroke-width="3"/>
+            <text x="80" y="364" class="svg-label" fill="#1652C4">SINGLE LOOP — steam travels straight from the core to the turbine</text>
+
+            <defs>
+              <marker id="arrowB" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#1652C4"/></marker>
+              <marker id="arrowB2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#1652C4"/></marker>
+              <marker id="arrowB3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#55617A"/></marker>
+              <marker id="arrowB4" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#55617A"/></marker>
+            </defs>
+          </svg>
+        </div>
+        <p>Simpler and slightly more efficient (no steam generator needed) — but because the steam driving the turbine came directly from the core, the turbine hall itself requires some radiological shielding and controls that a PWR's secondary loop doesn't need.</p>
+      </div>
+
+      <div class="callout">
+        <h4>PWR vs. BWR, in one line</h4>
+        <p>A PWR keeps radioactive water fully contained in the core building by using a heat-exchanger "middleman" loop; a BWR trades that extra complexity away by letting the core's own steam go straight to the turbine.</p>
+      </div>
+
+      <div class="teacher-note">
+        <span class="tn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3 1 8l11 5 9-4.09V17h2V8L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="currentColor"/></svg></span>
+        <div class="tn-body">
+          <h5>Teacher's Note</h5>
+          <p>If your Q&A panel asks you one thing about this module, it'll probably be "what stops radioactive material from escaping?" Have your answer ready: it's not one barrier, it's several — the fuel cladding, the reactor vessel, and the containment building all have to fail together for that to happen. That's called "defense in depth," and it's worth knowing the term.</p>
+        </div>
+      </div>
+
+      <div class="quiz" id="quiz3">
+        <h4 class="quiz-title mono">CHECKPOINT — MODULE 03</h4>
+        <div class="quiz-q" data-answer="b">
+          <p>1. What's the key structural difference between a PWR and a BWR?</p>
+          <div class="quiz-opts">
+            <button data-val="a">A BWR has no control rods</button>
+            <button data-val="b">A PWR uses two separate loops; a BWR uses only one</button>
+            <button data-val="c">A PWR doesn't use water at all</button>
+          </div>
+        </div>
+        <div class="quiz-q" data-answer="c">
+          <p>2. In a PWR, what actually touches the turbine blades?</p>
+          <div class="quiz-opts">
+            <button data-val="a">Primary loop water, straight from the core</button>
+            <button data-val="b">Molten uranium fuel</button>
+            <button data-val="c">Steam from the secondary loop, which never contacted the core</button>
+          </div>
+        </div>
+        <div class="quiz-q" data-answer="a">
+          <p>3. What is the containment structure's role?</p>
+          <div class="quiz-opts">
+            <button data-val="a">The final physical barrier preventing release of radioactive material</button>
+            <button data-val="b">It moderates neutrons</button>
+            <button data-val="c">It generates the electricity</button>
+          </div>
+        </div>
+        <div class="quiz-result mono" id="quizResult3" aria-live="polite"></div>
+      </div>
+
+      <div class="further-reading">
+        <h4 class="mono">FURTHER READING — MODULE 03</h4>
+        <ul>
+          <li><a href="https://world-nuclear.org/information-library/nuclear-fuel-cycle/nuclear-power-reactors/nuclear-power-reactors" target="_blank" rel="noopener">World Nuclear Association — Nuclear Power Reactors <span class="fr-source mono">WNA</span></a></li>
+          <li><a href="https://www.iaea.org/topics/power-reactor-information-system-pris" target="_blank" rel="noopener">IAEA — Power Reactor Information System (PRIS) <span class="fr-source mono">IAEA</span></a></li>
+          <li><a href="https://www.nrc.gov/reactors/power.html" target="_blank" rel="noopener">U.S. NRC — Power Reactors <span class="fr-source mono">NRC</span></a></li>
+        </ul>
+      </div>
+
+      <nav class="module-footer-nav">
+        <button class="btn-ghost" data-target="module2">← Module 02</button>
+        <button class="btn-primary" data-target="module4">Module 04: Powering the World →</button>
+      </nav>
+    </section>
+
+    <!-- ---------- MODULE 4 ---------- -->
+    <section class="view theme-coral" id="module4" data-view="module4">
+      <header class="module-head">
+        <span class="eyebrow mono">MODULE 04</span>
+        <h2>Powering the World</h2>
+        <p class="module-intro">Where fission fits into a real electricity grid, what it costs environmentally, and the two accidents every honest discussion of nuclear power has to address.</p>
+      </header>
+
+      <div class="module-hero-image">
+        <svg viewBox="0 0 640 120" role="img" aria-label="Icon banner representing energy grid, environment, and safety">
+          <g transform="translate(60,20)"><rect x="8" y="10" width="4" height="60" fill="#E0332F"/><rect x="20" y="25" width="4" height="45" fill="#E0332F"/><rect x="32" y="15" width="4" height="55" fill="#E0332F"/><rect x="44" y="35" width="4" height="35" fill="#E0332F"/><text x="30" y="95" class="svg-label" text-anchor="middle">THE GRID</text></g>
+          <g transform="translate(280,20)"><circle cx="30" cy="40" r="28" fill="none" stroke="#E0332F" stroke-width="2"/><path d="M8 40h44M30 12v56" stroke="#E0332F" stroke-width="1.2" opacity="0.5"/><text x="30" y="95" class="svg-label" text-anchor="middle">ENVIRONMENT</text></g>
+          <g transform="translate(500,20)"><path d="M30 8 8 20v20c0 18 12 28 22 32 10-4 22-14 22-32V20z" fill="none" stroke="#E0332F" stroke-width="2"/><path d="m20 40 7 7 14-14" fill="none" stroke="#E0332F" stroke-width="2"/><text x="30" y="95" class="svg-label" text-anchor="middle">SAFETY</text></g>
+        </svg>
+      </div>
+
+      <div class="predict">
+        <p class="predict-q">🤔 <strong>Quick prediction:</strong> which do you think has a bigger carbon footprint per unit of electricity — nuclear power, or solar panels?</p>
+        <button class="predict-btn" data-label="Reveal the answer →">Reveal the answer →</button>
+        <div class="predict-answer">
+          <p>Most people guess solar is lower, but on a full lifecycle basis, they're actually pretty close — and by some estimates nuclear edges slightly ahead. Solar panels require significant energy and materials to manufacture, while a nuclear plant's huge output over 40-60 years of operation spreads its construction footprint very thin. See the chart below for the fuller picture.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <h3><span class="concept-num mono">4.1</span> Baseload power</h3>
+        <p>Electricity grids need a steady floor of power available at all times — "baseload" — plus flexible extra capacity for peak demand. Solar and wind are variable: their output depends on weather and time of day. Nuclear plants, by contrast, run at close to full output continuously for 12–24 month stretches between refueling, making them well suited to covering that steady floor rather than following demand swings.</p>
+      </div>
+
+      <div class="concept-block">
+        <h3><span class="concept-num mono">4.2</span> Carbon footprint comparison</h3>
+        <p>Counting emissions across a power source's full lifecycle — construction, fuel, operation, decommissioning — nuclear's footprint is comparable to wind and lower than solar, and dramatically lower than fossil fuels:</p>
+        <div class="bar-chart mono" id="carbonChart">
+          <div class="bar-row"><span class="bar-label">Coal</span><div class="bar-track"><div class="bar-fill" style="--val:820"></div></div><span class="bar-value">820</span></div>
+          <div class="bar-row"><span class="bar-label">Natural Gas</span><div class="bar-track"><div class="bar-fill" style="--val:490"></div></div><span class="bar-value">490</span></div>
+          <div class="bar-row"><span class="bar-label">Solar (PV)</span><div class="bar-track"><div class="bar-fill" style="--val:40"></div></div><span class="bar-value">40</span></div>
+          <div class="bar-row"><span class="bar-label">Hydropower</span><div class="bar-track"><div class="bar-fill" style="--val:24"></div></div><span class="bar-value">24</span></div>
+          <div class="bar-row highlight"><span class="bar-label">Nuclear</span><div class="bar-track"><div class="bar-fill" style="--val:12"></div></div><span class="bar-value">12</span></div>
+          <div class="bar-row"><span class="bar-label">Wind</span><div class="bar-track"><div class="bar-fill" style="--val:11"></div></div><span class="bar-value">11</span></div>
+        </div>
+        <p class="chart-caption mono">Approximate lifecycle grams of CO₂-equivalent per kWh generated (illustrative figures compiled from IPCC-range lifecycle assessments)</p>
+      </div>
+
+      <div class="concept-block">
+        <h3><span class="concept-num mono">4.3</span> Radioactive waste management</h3>
+        <p>Nuclear waste is real, but its volume is often smaller than people expect: a typical reactor produces around 20–30 tonnes of used fuel per year, versus the millions of tonnes of ash and flue gas a coal plant emits.</p>
+        <p><strong>Low-level waste</strong> (contaminated tools, protective clothing) decays to safe levels within years to decades and is handled with standard shielded disposal. <strong>High-level waste</strong> — spent fuel itself — stays radioactive for much longer, and is first cooled in on-site pools for years, then moved to dry cask storage: sealed steel-and-concrete containers designed to safely hold it for decades. The long-term goal in several countries is deep geological repositories — stable rock formations hundreds of meters underground, such as Finland's Onkalo facility — designed to isolate waste for the very long term.</p>
+      </div>
+
+      <div class="concept-block">
+        <h3><span class="concept-num mono">4.4</span> Chernobyl and Fukushima: what actually happened</h3>
+        <div class="compare-table">
+          <div class="compare-row compare-head">
+            <span></span><span class="mono">CHERNOBYL (1986)</span><span class="mono">FUKUSHIMA DAIICHI (2011)</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-label">Root cause</span>
+            <span>A flawed reactor design (RBMK, no containment structure) combined with a mishandled safety test and operator errors</span>
+            <span>A magnitude-9 earthquake and tsunami disabled backup power needed to keep cooling the core after shutdown</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-label">Containment</span>
+            <span>No robust containment building — this was the single biggest design flaw</span>
+            <span>Reactors had containment structures; multiple hydrogen explosions still damaged outer buildings</span>
+          </div>
+          <div class="compare-row">
+            <span class="compare-label">Key lesson</span>
+            <span>Reactor designs without inherent safety margins and full containment are unacceptable — this design was never built in the West</span>
+            <span>Backup safety systems must survive the worst realistic natural disaster, not just routine failures</span>
+          </div>
+        </div>
+        <p>Both accidents drove major, lasting safety reforms — from the passive-safety features in Generation III/III+ reactors (Module 01) to stronger flood and power-loss protocols worldwide. Understanding <em>why</em> each happened, rather than just <em>that</em> they happened, is what separates an informed opinion on nuclear safety from an uninformed one.</p>
+      </div>
+
+      <div class="teacher-note">
+        <span class="tn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3 1 8l11 5 9-4.09V17h2V8L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="currentColor"/></svg></span>
+        <div class="tn-body">
+          <h5>Teacher's Note</h5>
+          <p>Here's my honest advice for your Q&A: don't try to argue nuclear power is risk-free — it isn't, and a panelist will see through that instantly. The stronger answer is the one you just read: explain specifically what went wrong each time, and what's different in reactors built since. Specificity is what makes an answer sound like understanding rather than a talking point.</p>
+        </div>
+      </div>
+
+      <div class="quiz" id="quiz4">
+        <h4 class="quiz-title mono">CHECKPOINT — MODULE 04</h4>
+        <div class="quiz-q" data-answer="a">
+          <p>1. Why is nuclear power well-suited to "baseload" demand?</p>
+          <div class="quiz-opts">
+            <button data-val="a">It can run continuously at near-full output for extended periods, regardless of weather</button>
+            <button data-val="b">It's the cheapest source of electricity</button>
+            <button data-val="c">It can instantly ramp up and down to match demand spikes</button>
+          </div>
+        </div>
+        <div class="quiz-q" data-answer="c">
+          <p>2. What was the single biggest design flaw at Chernobyl?</p>
+          <div class="quiz-opts">
+            <button data-val="a">It had no control rods</button>
+            <button data-val="b">It was a BWR design</button>
+            <button data-val="c">The reactor had no robust containment structure</button>
+          </div>
+        </div>
+        <div class="quiz-q" data-answer="b">
+          <p>3. What triggered the Fukushima accident?</p>
+          <div class="quiz-opts">
+            <button data-val="a">An operator safety test gone wrong</button>
+            <button data-val="b">An earthquake and tsunami disabling backup cooling power</button>
+            <button data-val="c">A chain reaction that ran out of control (k &gt; 1) during normal operation</button>
+          </div>
+        </div>
+        <div class="quiz-result mono" id="quizResult4" aria-live="polite"></div>
+      </div>
+
+      <div class="further-reading">
+        <h4 class="mono">FURTHER READING — MODULE 04</h4>
+        <ul>
+          <li><a href="https://world-nuclear.org/information-library/nuclear-fuel-cycle/nuclear-wastes/radioactive-waste-management" target="_blank" rel="noopener">World Nuclear Association — Radioactive Waste Management <span class="fr-source mono">WNA</span></a></li>
+          <li><a href="https://www.iaea.org/topics/nuclear-safety-and-security" target="_blank" rel="noopener">IAEA — Nuclear Safety and Security <span class="fr-source mono">IAEA</span></a></li>
+          <li><a href="https://www.nrc.gov/reading-rm/doc-collections/fact-sheets/chernobyl-bg.html" target="_blank" rel="noopener">U.S. NRC — Backgrounder on Chernobyl <span class="fr-source mono">NRC</span></a></li>
+        </ul>
+      </div>
+
+      <nav class="module-footer-nav">
+        <button class="btn-ghost" data-target="module3">← Module 03</button>
+        <button class="btn-primary" data-target="module5">Module 05: The Horizon →</button>
+      </nav>
+    </section>
+
+    <!-- ---------- MODULE 5 ---------- -->
+    <section class="view theme-violet" id="module5" data-view="module5">
+      <header class="module-head">
+        <span class="eyebrow mono">MODULE 05</span>
+        <h2>The Horizon of Nuclear Energy</h2>
+        <p class="module-intro">The story doesn't end with the reactors running today. Two parallel movements are reshaping what nuclear power looks like next.</p>
+      </header>
+
+      <div class="module-hero-image">
+        <svg viewBox="0 0 640 120" role="img" aria-label="Icon banner representing small modular reactors and next-generation designs">
+          <g transform="translate(60,20)"><rect x="10" y="15" width="18" height="50" rx="2" fill="none" stroke="#7A3E9D" stroke-width="2"/><rect x="32" y="15" width="18" height="50" rx="2" fill="none" stroke="#7A3E9D" stroke-width="2"/><text x="30" y="95" class="svg-label" text-anchor="middle">MODULAR BUILD</text></g>
+          <g transform="translate(280,20)"><path d="M30 10a20 20 0 1 1-0.01 0" fill="none" stroke="#7A3E9D" stroke-width="2"/><path d="M30 20a10 10 0 1 1-0.01 0" fill="none" stroke="#7A3E9D" stroke-width="1.5" opacity="0.6"/><text x="30" y="95" class="svg-label" text-anchor="middle">MOLTEN SALT</text></g>
+          <g transform="translate(500,20)"><path d="M30 8 44 45H16z" fill="none" stroke="#7A3E9D" stroke-width="2"/><circle cx="30" cy="55" r="7" fill="none" stroke="#7A3E9D" stroke-width="2"/><text x="30" y="95" class="svg-label" text-anchor="middle">FAST REACTORS</text></g>
+        </svg>
+      </div>
+
+      <div class="predict">
+        <p class="predict-q">🤔 <strong>Quick prediction:</strong> SMRs are smaller than traditional reactors, so do you think a single SMR produces more or less total electricity than a traditional plant?</p>
+        <button class="predict-btn" data-label="Reveal the answer →">Reveal the answer →</button>
+        <div class="predict-answer">
+          <p>Less, per unit — a single SMR (around 300 MW) produces roughly a third of what a traditional 1,000+ MW reactor does. But that's the point: utilities can install just one or two SMRs to match smaller grids or local demand, or add more modules over time as demand grows, instead of committing billions upfront to one giant plant.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <h3><span class="concept-num mono">5.1</span> Small Modular Reactors (SMRs)</h3>
+        <p>Traditional reactors are built on-site, custom, over many years — a huge upfront cost and schedule risk. SMRs flip that: they're small enough (roughly 300 MW or less, versus 1,000+ MW for a traditional plant) to be manufactured as standardized modules in a factory, then shipped and assembled on site — the same logic that made modern shipbuilding and aircraft manufacturing cheaper and faster.</p>
+        <div class="component-grid">
+          <div class="component-card"><span class="mono comp-tag">NuScale</span><p>US-based design already certified by the Nuclear Regulatory Commission — modules use natural water circulation, no pumps needed for core cooling.</p></div>
+          <div class="component-card"><span class="mono comp-tag">Rolls-Royce SMR</span><p>UK-based design aiming to reuse existing nuclear-submarine manufacturing expertise to build reactors at aircraft-factory speed.</p></div>
+          <div class="component-card"><span class="mono comp-tag">GE Hitachi BWRX-300</span><p>A simplified 300 MW boiling water reactor design, aiming to cut construction cost and time versus traditional BWRs.</p></div>
+        </div>
+
+        <div class="real-photo-frame real-photo-frame--tall">
+          <img src="images/nuscale-diagram.jpg" alt="Official technical diagram of the real NuScale small modular reactor design" onerror="this.closest('.real-photo-frame').style.display='none'">
+          <p class="real-photo-caption">The real NuScale Power Module — the actual NRC-certified design, not a mockup. Each module is factory-built and shipped whole; a plant stacks several inside one shared pool. Diagram: Wikimedia Commons.</p>
+        </div>
+      </div>
+
+      <div class="concept-block">
+        <h3><span class="concept-num mono">5.2</span> Generation IV concepts</h3>
+        <p>Beyond making today's reactor types smaller, Generation IV designs rethink the fuel and cooling approach entirely:</p>
+        <div class="component-grid">
+          <div class="component-card"><span class="mono comp-tag">Molten Salt Reactors</span><p>Fuel is dissolved directly in a liquid salt coolant rather than solid rods. If it overheats, a plug melts and the fuel drains safely into a passively cooled tank — a meltdown becomes physically difficult to sustain.</p></div>
+          <div class="component-card"><span class="mono comp-tag">Fast Neutron Reactors</span><p>Skip the moderator entirely, using fast neutrons directly. This lets them "burn" far more of the uranium (including material current reactors treat as waste), potentially reducing long-lived waste volumes significantly.</p></div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <h4>Why "smaller and modular" is the real headline</h4>
+        <p>The biggest barrier to new nuclear build historically hasn't been physics — it's cost overruns and construction delays on massive, custom, one-off projects. SMRs and Gen IV designs are, in large part, an attempt to solve an engineering-economics problem as much as a physics one.</p>
+      </div>
+
+      <div class="teacher-note">
+        <span class="tn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3 1 8l11 5 9-4.09V17h2V8L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="currentColor"/></svg></span>
+        <div class="tn-body">
+          <h5>Teacher's Note</h5>
+          <p>By this point you know more of the real story than most op-eds you'll ever read on this topic. My last piece of advice: when someone asks you "is nuclear power safe," resist a one-word answer. Walk them through the physics, the engineering, and the track record — that's a stronger answer than "yes" or "no" ever could be, and it's exactly what your Q&A panel wants to see.</p>
+        </div>
+      </div>
+
+      <div class="quiz" id="quiz5">
+        <h4 class="quiz-title mono">CHECKPOINT — MODULE 05</h4>
+        <div class="quiz-q" data-answer="b">
+          <p>1. What is the main advantage SMRs are trying to capture?</p>
+          <div class="quiz-opts">
+            <button data-val="a">They produce more power than traditional reactors</button>
+            <button data-val="b">Factory-built, standardized modules can cut cost and schedule risk versus custom-built plants</button>
+            <button data-val="c">They don't require any moderator or coolant</button>
+          </div>
+        </div>
+        <div class="quiz-q" data-answer="c">
+          <p>2. What makes a molten salt reactor's safety approach different?</p>
+          <div class="quiz-opts">
+            <button data-val="a">It uses no control rods at all</button>
+            <button data-val="b">It cannot generate heat above 100°C</button>
+            <button data-val="c">If it overheats, the liquid fuel can drain passively into a safe, cooled tank</button>
+          </div>
+        </div>
+        <div class="quiz-q" data-answer="a">
+          <p>3. What's a key benefit of fast neutron reactors?</p>
+          <div class="quiz-opts">
+            <button data-val="a">They can use more of the uranium fuel, potentially reducing long-lived waste</button>
+            <button data-val="b">They require no containment structure</button>
+            <button data-val="c">They run without any fuel at all</button>
+          </div>
+        </div>
+        <div class="quiz-result mono" id="quizResult5" aria-live="polite"></div>
+      </div>
+
+      <div class="completion-banner" id="completionBanner" hidden>
+        <svg class="poster-seal" viewBox="0 0 100 100" role="img" aria-label="Certified reactor operator seal">
+          <circle cx="50" cy="50" r="46" fill="#FFF9EE" stroke="#16223F" stroke-width="2.5"/>
+          <circle cx="50" cy="50" r="37" fill="none" stroke="#E0332F" stroke-width="2" stroke-dasharray="4 3"/>
+          <g transform="translate(50,44)">
+            <ellipse rx="20" ry="7" fill="none" stroke="#1652C4" stroke-width="1.8"/>
+            <ellipse rx="20" ry="7" fill="none" stroke="#1652C4" stroke-width="1.8" transform="rotate(60)"/>
+            <ellipse rx="20" ry="7" fill="none" stroke="#1652C4" stroke-width="1.8" transform="rotate(120)"/>
+            <circle r="4" fill="#F2A900"/>
+          </g>
+          <text x="50" y="80" text-anchor="middle" font-size="9" fill="#16223F" font-family="'IBM Plex Mono', monospace" letter-spacing="0.5">CERTIFIED</text>
+        </svg>
+        <div>
+          <h4>🔵 Reactor Startup Sequence Complete</h4>
+          <p>You've completed all 5 modules — from Becquerel's fogged photographic plates to the fusion of factory manufacturing and fission physics in SMRs. You now know more about how nuclear fission power actually works than most adults ever will.</p>
+        </div>
+      </div>
+
+      <div class="further-reading">
+        <h4 class="mono">FURTHER READING — MODULE 05</h4>
+        <ul>
+          <li><a href="https://world-nuclear.org/information-library/nuclear-fuel-cycle/nuclear-power-reactors/small-nuclear-power-reactors" target="_blank" rel="noopener">World Nuclear Association — Small Nuclear Power Reactors <span class="fr-source mono">WNA</span></a></li>
+          <li><a href="https://www.iaea.org/topics/small-modular-reactors" target="_blank" rel="noopener">IAEA — Small Modular Reactors <span class="fr-source mono">IAEA</span></a></li>
+          <li><a href="https://www.nrc.gov/reactors/new-reactors/smr.html" target="_blank" rel="noopener">U.S. NRC — Advanced Reactors & SMRs <span class="fr-source mono">NRC</span></a></li>
+        </ul>
+      </div>
+
+      <nav class="module-footer-nav">
+        <button class="btn-ghost" data-target="module4">← Module 04</button>
+        <button class="btn-primary" id="finishBtn" data-target="home">↺ Back to Control Room</button>
+      </nav>
+    </section>
+
+    <!-- ---------- GLOSSARY ---------- -->
+    <section class="view theme-home" id="glossary" data-view="glossary">
+      <header class="module-head">
+        <span class="eyebrow mono">REFERENCE</span>
+        <h2>Glossary</h2>
+        <p class="module-intro">Every technical term used across all five modules, in one searchable place. Start typing to filter.</p>
+      </header>
+
+      <div class="glossary-search-wrap">
+        <svg class="glossary-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="glossarySearch" class="glossary-search" placeholder="Search terms or definitions… (e.g. “criticality”, “moderator”, “SMR”)" aria-label="Search glossary">
+        <span class="glossary-count mono" id="glossaryCount"></span>
+      </div>
+
+      <dl class="glossary-list" id="glossaryList">
+        <div class="glossary-entry" data-module="module1"><dt>Radioactivity <span class="glossary-tag mono">M01</span></dt><dd>The spontaneous emission of energy or particles from an unstable atomic nucleus, first observed by Henri Becquerel in 1896.</dd></div>
+        <div class="glossary-entry" data-module="module1"><dt>Nucleus <span class="glossary-tag mono">M01</span></dt><dd>The tiny, dense, positively-charged core of an atom, discovered by Ernest Rutherford in 1911, containing nearly all of the atom's mass.</dd></div>
+        <div class="glossary-entry" data-module="module1"><dt>Fission <span class="glossary-tag mono">M01</span></dt><dd>The splitting of a heavy atomic nucleus into two lighter nuclei, releasing energy — named by Lise Meitner and Otto Frisch in 1938 after the biological term for cell division.</dd></div>
+        <div class="glossary-entry" data-module="module1"><dt>Chain reaction <span class="glossary-tag mono">M01</span></dt><dd>A process in which one fission event releases neutrons that go on to trigger further fission events.</dd></div>
+        <div class="glossary-entry" data-module="module1"><dt>Chicago Pile-1 <span class="glossary-tag mono">M01</span></dt><dd>The first human-made nuclear reactor, built by Enrico Fermi's team in 1942, which achieved the first controlled, self-sustaining chain reaction.</dd></div>
+        <div class="glossary-entry" data-module="module1"><dt>Manhattan Project <span class="glossary-tag mono">M01</span></dt><dd>The secret Allied research program (1939–1945) that produced the first reactors and the first nuclear weapons.</dd></div>
+        <div class="glossary-entry" data-module="module1"><dt>Generation I / II / III / IV <span class="glossary-tag mono">M01</span></dt><dd>The industry's shorthand for successive eras of reactor design, from the first experimental reactors (Gen I) through today's standardized fleet (Gen II), passive-safety designs (Gen III/III+), to next-generation concepts (Gen IV).</dd></div>
+        <div class="glossary-entry" data-module="module2"><dt>Binding energy <span class="glossary-tag mono">M02</span></dt><dd>The energy that holds a nucleus together; binding energy per nucleon measures how tightly bound — and how stable — a given nucleus is.</dd></div>
+        <div class="glossary-entry" data-module="module2"><dt>Mass defect <span class="glossary-tag mono">M02</span></dt><dd>The tiny amount of mass "missing" after fission, converted directly into energy per Einstein's E = mc².</dd></div>
+        <div class="glossary-entry" data-module="module2"><dt>Fissile <span class="glossary-tag mono">M02</span></dt><dd>Describes a nucleus (like U-235 or Pu-239) that can absorb a slow-moving neutron and split almost immediately.</dd></div>
+        <div class="glossary-entry" data-module="module2"><dt>Enrichment <span class="glossary-tag mono">M02</span></dt><dd>The process of increasing the proportion of fissile U-235 in uranium fuel, typically from the natural ~0.7% up to roughly 3–5% for reactor use.</dd></div>
+        <div class="glossary-entry" data-module="module2"><dt>Moderator <span class="glossary-tag mono">M02</span></dt><dd>A material — usually water, heavy water, or graphite — that slows fast neutrons down so they're more likely to trigger further fission.</dd></div>
+        <div class="glossary-entry" data-module="module2"><dt>Thermal neutron <span class="glossary-tag mono">M02</span></dt><dd>A neutron that has been slowed by a moderator to roughly the speed of surrounding atoms, making it far more likely to cause fission than a "fast" neutron.</dd></div>
+        <div class="glossary-entry" data-module="module2"><dt>Criticality (k) <span class="glossary-tag mono">M02</span></dt><dd>The neutron multiplication factor, k — the average number of neutrons from one fission that go on to cause another. k = 1 is a steady, self-sustaining reaction ("critical"); k &lt; 1 is subcritical (dying out); k &gt; 1 is supercritical (growing).</dd></div>
+        <div class="glossary-entry" data-module="module2"><dt>Control rod <span class="glossary-tag mono">M02</span></dt><dd>A rod of neutron-absorbing material (typically boron or cadmium) that operators insert or withdraw to hold the chain reaction at criticality.</dd></div>
+        <div class="glossary-entry" data-module="module3"><dt>Fuel rod <span class="glossary-tag mono">M03</span></dt><dd>A thin zirconium-alloy tube packed with uranium fuel pellets — the site where fission actually happens inside the core.</dd></div>
+        <div class="glossary-entry" data-module="module3"><dt>Coolant <span class="glossary-tag mono">M03</span></dt><dd>A fluid (usually water) that carries heat away from the core to generate steam, often doubling as the moderator.</dd></div>
+        <div class="glossary-entry" data-module="module3"><dt>Containment <span class="glossary-tag mono">M03</span></dt><dd>The thick steel-and-concrete structure enclosing a reactor — the final physical barrier against release of radioactive material.</dd></div>
+        <div class="glossary-entry" data-module="module3"><dt>PWR (Pressurized Water Reactor) <span class="glossary-tag mono">M03</span></dt><dd>The most common commercial reactor design worldwide, using two separate water loops — a radioactive primary loop and a clean secondary loop — that never mix.</dd></div>
+        <div class="glossary-entry" data-module="module3"><dt>BWR (Boiling Water Reactor) <span class="glossary-tag mono">M03</span></dt><dd>A reactor design using a single water loop, where steam is generated directly in the core and sent straight to the turbine.</dd></div>
+        <div class="glossary-entry" data-module="module3"><dt>Steam generator <span class="glossary-tag mono">M03</span></dt><dd>The heat-exchanger component in a PWR that transfers heat from the radioactive primary loop to the clean secondary loop, without letting the two mix.</dd></div>
+        <div class="glossary-entry" data-module="module3"><dt>Defense in depth <span class="glossary-tag mono">M03</span></dt><dd>The safety principle of using multiple independent barriers — fuel cladding, reactor vessel, and containment building — so that no single failure can release radioactive material.</dd></div>
+        <div class="glossary-entry" data-module="module4"><dt>Baseload power <span class="glossary-tag mono">M04</span></dt><dd>The steady, always-on floor of electricity demand that a grid must meet continuously, which nuclear plants are well suited to cover.</dd></div>
+        <div class="glossary-entry" data-module="module4"><dt>Lifecycle emissions <span class="glossary-tag mono">M04</span></dt><dd>The total greenhouse gas emissions of an energy source counted across its full lifecycle — construction, fuel, operation, and decommissioning.</dd></div>
+        <div class="glossary-entry" data-module="module4"><dt>Low-level waste <span class="glossary-tag mono">M04</span></dt><dd>Mildly contaminated material (tools, protective clothing) that decays to safe levels within years to decades.</dd></div>
+        <div class="glossary-entry" data-module="module4"><dt>High-level waste <span class="glossary-tag mono">M04</span></dt><dd>Spent nuclear fuel, which remains radioactive for a very long time and requires cooling, then long-term secure storage.</dd></div>
+        <div class="glossary-entry" data-module="module4"><dt>Dry cask storage <span class="glossary-tag mono">M04</span></dt><dd>Sealed steel-and-concrete containers used to safely store cooled spent fuel for decades on-site.</dd></div>
+        <div class="glossary-entry" data-module="module4"><dt>Geological repository <span class="glossary-tag mono">M04</span></dt><dd>A permanent, deep underground disposal site — such as Finland's Onkalo facility — designed to isolate high-level waste for the very long term.</dd></div>
+        <div class="glossary-entry" data-module="module4"><dt>RBMK <span class="glossary-tag mono">M04</span></dt><dd>The Soviet reactor design used at Chernobyl, notable for lacking a robust containment structure — a flaw never replicated in Western reactor designs.</dd></div>
+        <div class="glossary-entry" data-module="module5"><dt>SMR (Small Modular Reactor) <span class="glossary-tag mono">M05</span></dt><dd>A reactor design of roughly 300 MW or less, small enough to be built as standardized modules in a factory and shipped to site.</dd></div>
+        <div class="glossary-entry" data-module="module5"><dt>Generation IV <span class="glossary-tag mono">M05</span></dt><dd>A set of next-generation reactor concepts that rethink fuel and coolant entirely, including molten salt and fast neutron reactors.</dd></div>
+        <div class="glossary-entry" data-module="module5"><dt>Molten salt reactor <span class="glossary-tag mono">M05</span></dt><dd>A Generation IV concept where fuel is dissolved in liquid salt coolant; if it overheats, a plug melts and the fuel drains passively into a safe, cooled tank.</dd></div>
+        <div class="glossary-entry" data-module="module5"><dt>Fast neutron reactor <span class="glossary-tag mono">M05</span></dt><dd>A reactor that skips the moderator and uses fast neutrons directly, allowing it to "burn" more of the uranium fuel and potentially reduce long-lived waste.</dd></div>
+      </dl>
+
+      <p class="glossary-empty mono" id="glossaryEmpty" hidden>No terms match your search.</p>
+
+      <nav class="module-footer-nav">
+        <button class="btn-ghost" data-target="home">← Control Room</button>
+        <button class="btn-primary" data-target="examCert">Take the Certification Exam →</button>
+      </nav>
+    </section>
+
+    <!-- ---------- CERTIFICATION EXAM ---------- -->
+    <section class="view theme-home" id="examCert" data-view="examCert">
+      <header class="module-head">
+        <span class="eyebrow mono">FINAL ASSESSMENT</span>
+        <h2>Reactor Operator Certification Exam</h2>
+        <p class="module-intro">15 questions drawn from all five modules. Score <strong>50% or higher</strong> to pass. You can retake the exam as many times as you like — each attempt reshuffles the question order.</p>
+      </header>
+
+      <div class="exam-intro" id="examIntro">
+        <div class="exam-intro-card">
+          <svg class="poster-seal" viewBox="0 0 100 100" role="img" aria-label="Certification seal">
+            <circle cx="50" cy="50" r="46" fill="#FFF9EE" stroke="#16223F" stroke-width="2.5"/>
+            <circle cx="50" cy="50" r="37" fill="none" stroke="#E0332F" stroke-width="2" stroke-dasharray="4 3"/>
+            <g transform="translate(50,44)">
+              <ellipse rx="20" ry="7" fill="none" stroke="#1652C4" stroke-width="1.8"/>
+              <ellipse rx="20" ry="7" fill="none" stroke="#1652C4" stroke-width="1.8" transform="rotate(60)"/>
+              <ellipse rx="20" ry="7" fill="none" stroke="#1652C4" stroke-width="1.8" transform="rotate(120)"/>
+              <circle r="4" fill="#F2A900"/>
+            </g>
+            <text x="50" y="80" text-anchor="middle" font-size="9" fill="#16223F" font-family="'IBM Plex Mono', monospace" letter-spacing="0.5">CERTIFIED</text>
+          </svg>
+          <div>
+            <h4>Ready when you are.</h4>
+            <p>This pulls three questions from each module — fifteen total — and shuffles their order every attempt. Nothing here is timed. Take your time, and good luck.</p>
+            <button class="btn-primary" id="examStartBtn">Begin Exam →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="exam" id="examBody" hidden>
+        <div class="exam-progress-wrap">
+          <div class="exam-progress-label mono"><span id="examAnsweredCount">0</span> / 15 ANSWERED</div>
+          <div class="progress-track"><div class="progress-fill" id="examProgressFill"></div></div>
+        </div>
+        <div id="examQuestions"></div>
+        <button class="btn-primary" id="examSubmitBtn" disabled>Submit Exam</button>
+      </div>
+
+      <div class="exam-result" id="examResult" hidden>
+        <div class="exam-result-badge mono" id="examResultBadge"></div>
+        <h3 id="examResultHeading"></h3>
+        <p id="examResultBody"></p>
+        <button class="btn-ghost mono" id="examRetryBtn">↺ RETAKE EXAM</button>
+      </div>
+
+      <nav class="module-footer-nav">
+        <button class="btn-ghost" data-target="glossary">← Glossary</button>
+        <button class="btn-primary" data-target="home">↺ Back to Control Room</button>
+      </nav>
+    </section>
+
+  </main>
+
+  <!-- ===================== RIGHT RAIL — TEACHER'S CONSOLE ===================== -->
+  <aside class="right-rail">
+    <div class="rail-sticky">
+      <div class="rail-header">
+        <span class="rail-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3 1 8l11 5 9-4.09V17h2V8L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="currentColor"/></svg>
+        </span>
+        <span class="mono">TEACHER'S CONSOLE</span>
+      </div>
+
+      <div class="aside-view active" id="aside-home">
+        <div class="rail-card">
+          <h5>Welcome, class.</h5>
+          <p>I'm running this console alongside you — as you move through each module, I'll drop facts, definitions, and quick checks over here. Start with Module 01 whenever you're ready.</p>
+        </div>
+        <div class="rail-card stat-card">
+          <span class="stat-num mono">200 MeV</span>
+          <span class="stat-label">Energy released by splitting a single U-235 nucleus</span>
+        </div>
+        <div class="rail-card stat-card">
+          <span class="stat-num mono">~2,000,000×</span>
+          <span class="stat-label">More energy per kg than burning coal</span>
+        </div>
+      </div>
+
+      <div class="aside-view" id="aside-module1">
+        <div class="rail-card"><h5>Glossary</h5>
+          <dl class="rail-glossary">
+            <dt>Fission</dt><dd>Splitting a heavy nucleus into two lighter ones</dd>
+            <dt>Chain reaction</dt><dd>One fission triggering further fissions</dd>
+          </dl>
+        </div>
+        <div class="rail-card"><h5>💡 Did you know?</h5><p>Chicago Pile-1 had no shielding, no cooling system, and no containment — just graphite blocks, uranium, and a lot of trust in the physics.</p></div>
+      </div>
+
+      <div class="aside-view" id="aside-module2">
+        <div class="rail-card"><h5>Glossary</h5>
+          <dl class="rail-glossary">
+            <dt>Criticality (k=1)</dt><dd>Reaction rate holds steady</dd>
+            <dt>Moderator</dt><dd>Slows neutrons to increase fission odds</dd>
+          </dl>
+        </div>
+        <div class="rail-card"><h5>💡 Did you know?</h5><p>Only about 0.7% of natural uranium is fissile U-235 — reactor fuel is "enriched" to raise that to roughly 3–5%.</p></div>
+      </div>
+
+      <div class="aside-view" id="aside-module3">
+        <div class="rail-card"><h5>Glossary</h5>
+          <dl class="rail-glossary">
+            <dt>PWR</dt><dd>Two-loop design, most common worldwide</dd>
+            <dt>BWR</dt><dd>Single-loop, steam made in-core</dd>
+          </dl>
+        </div>
+        <div class="rail-card"><h5>💡 Did you know?</h5><p>A single fuel pellet, smaller than a fingertip, contains roughly the same energy as a tonne of coal.</p></div>
+      </div>
+
+      <div class="aside-view" id="aside-module4">
+        <div class="rail-card"><h5>Glossary</h5>
+          <dl class="rail-glossary">
+            <dt>Baseload</dt><dd>The grid's steady, always-on demand floor</dd>
+            <dt>Dry cask</dt><dd>Sealed storage for cooled spent fuel</dd>
+          </dl>
+        </div>
+        <div class="rail-card"><h5>💡 Did you know?</h5><p>France generates roughly 65–70% of its electricity from nuclear power — among the highest shares of any country.</p></div>
+      </div>
+
+      <div class="aside-view" id="aside-module5">
+        <div class="rail-card"><h5>Glossary</h5>
+          <dl class="rail-glossary">
+            <dt>SMR</dt><dd>Factory-built reactor, ~300 MW or less</dd>
+            <dt>Gen IV</dt><dd>Next-gen fuel/coolant concepts</dd>
+          </dl>
+        </div>
+        <div class="rail-card"><h5>💡 Did you know?</h5><p>NuScale's SMR design was the first in the US ever certified by regulators for commercial use.</p></div>
+      </div>
+
+      <div class="aside-view" id="aside-glossary">
+        <div class="rail-card">
+          <h5>Looking for a term?</h5>
+          <p>Type into the search bar to filter — every entry is tagged with the module it came from (M01–M05), so you can jump back and re-read the full section if you need to.</p>
+        </div>
+      </div>
+
+      <div class="aside-view" id="aside-examCert">
+        <div class="rail-card">
+          <h5>Exam tips</h5>
+          <p>Fifteen questions, three from each module. There's no time limit and no penalty for guessing — answer everything, then submit. 50% (8 of 15) is a pass.</p>
+        </div>
+        <div class="rail-card stat-card">
+          <span class="stat-num mono">50%</span>
+          <span class="stat-label">Minimum score to pass — retake anytime</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
